@@ -1,12 +1,12 @@
-name: custom_chatbot_gpu
+name: custom_chatbot
 
 services:
   custom-chatbot:
     build:
       context: ../
-      dockerfile: ./docker/Dockerfile
-    image: deepseek-chatbot-gpu
-    container_name: custom-chatbot-gpu
+      dockerfile: ./docker/NonGPUDockerfile
+    image: deepseek-chatbot
+    container_name: custom-chatbot
     restart: unless-stopped
     env_file:
       - ./docker/.env

@@ -1,23 +1,32 @@
-# Используем официальный образ Debian
-FROM debian:bullseye-slim
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
-# Обновляем систему и устанавливаем зависимости для Python и других необходимых библиотек
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+
 RUN apt-get update && \
     apt-get install -y \
+    software-properties-common \
     build-essential \
-    python3-pip \
-    python3-dev \
+    wget \
     curl \
-    && apt-get clean
+    git && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3.11-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    curl -sS https://bootstrap.pypa.io/get-pip.py | python
+
+COPY . /app
 WORKDIR /app
 
-# Копируем все файлы в контейнер
-COPY . /app
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Устанавливаем зависимости из requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
-
-# Запускаем приложение с помощью Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "app/main.py"]
