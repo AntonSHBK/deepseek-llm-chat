@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 class Settings(BaseSettings):
     # Название модели DeepSeek
-    MODEL_NAME: str = "deepseek-ai/deepseek-llm-7b-chat"
+    MODEL_NAME: str = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
 
     # Кэш для модели
     CACHE_DIR: Path = Field(default=BASE_DIR / "data" / "cached_dir")
